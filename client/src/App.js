@@ -7,17 +7,16 @@ import Navbar from './components/pages/Navbar.js';
 import Login from './components/pages/Login.js';
 //import { UserProvider } from './context/userContext';
 
-
 function App() {
   return (
   <div className="App">
-    
+ 
         <BrowserRouter>
           <Routes>
-              <Route  element={ <Navbar />}>
-              <Route index element={ <Login />}/>
-            
-              <Route index element={<About />}/>
+              <Route  path="/" element={ <Navbar />}>
+              <Route index element={<Login />}/>
+              <Route path ="home" element={ <About />}/>
+
               <Route path="register" element={<Register />}/>
             
            
@@ -27,7 +26,11 @@ function App() {
      
 
     </div>
-      
+        
+  );
+}
+
+export default App;
      
 
   
