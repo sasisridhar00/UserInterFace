@@ -1,42 +1,45 @@
-const mongoose = require("mongoose");
-const users = require("./user");
+
+  onst mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-    postcontent : String,
-    likes : Number,
-    userId : String
+  username: String,
+  posttext: String
 })
 
+const Post = mongoose.model("Post", postSchema);
 
-async function newPost(postcontent) {
-    
-  
+async function create(userID, posttext) {
     const newPost = await Post.create({
-        postcontent : postcontent
+      username: userID,
+      posttext: posttext
+
     });
   
-    return newPost._doc;
+    return newPost;
   }
-  
 
-  
-  // UPDATE
-  async function updatePost(id, postcontent) {
-    const post = await Post.updateOne({"_id": id}, {$set: { postcontent : postcontent}});
+//read
+async function fetch(userID) {
+    const post = await getPost(userID);
+    if(!post) throw Error('post not found');
     return post;
   }
-  
-  //DELETE
-  async function deletePost(id) {
+
+//update
+async function updatePost(id, newText) {
+    const post = await post.updateOne({"_id": id}, {$set: { posttext: newText}});
+    return post;
+  }
+
+//Delete
+async function deletePost(id) {
     await Post.deleteOne({"_id": id});
   };
   
-  // utility functions
-  async function getPost(id) {
-    return await Post.findOne({ "postcontent": postcontent});
+// utility functions
+async function getPost(userID) {
+    return await Post.findOne({ "username": userID});
   }
   
   // 5. export all functions we want to access in route files
-  module.exports = { 
-      newPost, getPost, updatePost, deletePost
-  };
+  module.exports = {create, fetch, updatePost, deletePost, getPost};
