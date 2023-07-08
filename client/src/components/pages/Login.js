@@ -1,39 +1,30 @@
 
+import { useState } from "react";
 import { fetchData } from "../../main.js";
-import { useState} from "react";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import UserContext from "../../context/userContext.js";
 
-const Login = () =>{
+const Login = () => {
+    const navigate = useNavigate();
+    const {user, updateUser} = useContext(UserContext);
+    const { username, email, password} = user;
+    const onChange = (e) => updateUser(e.target.name, e.target.value)
 
-     const navigate = useNavigate();
-
-    //const {user, updateUser} = useContext(UserContext);
-    const [user, setUser] = useState({
-      username: "",
-     
-      password: "",
-     
-     
-    })
-    const {username, password} = user;  
-  
-    const onChange = (e) => setUser({...user, [e.target.name]: e.target.value})
-  
     const onSubmit = (e) => {
       e.preventDefault();
-    // console.log(user)
-      fetchData("user/login", 
+      console.log(user)
+      fetchData("/user/login", 
         {
          username,
-     
          password
         }, 
        "POST" )
       
       .then((data) => {
         if(!data.message) {
-            console.log(user)
-         navigate("/ About")
+        updateUser("authenticated", true)
+        navigate("/profile")
         }
   })
     .catch((error) => {
@@ -41,52 +32,19 @@ const Login = () =>{
     })
   
   }
-
     return(
-        <div className="login">
-        
-        <h1 className="text-center">Hello Again!</h1>
-        
-        <form className="needs-validation" onSubmit={onSubmit}>
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">Username</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            id="username"
-            name='username'
-            onChange={onChange}
-            value={username}
-            required
-          />
-          <div className="invalid-feedback">
-          Please enter your username!
-         </div>
-        
-            
-            <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input 
-            type="password" 
-            className="form-control" 
-            id="password"
-            name='password'
-            onChange={onChange}
-            value={password}
-            required
-          />
-        </div>
-                <div className="invalid-feedback">
-                    Please enter your password
-                </div>
-            </div>
-            <div className="form-group form-check">
-                <input className="form-check-input" type="checkbox" id="check" />
-                <label className="form-check-label" for="check">Remember me</label>
-            </div>
-            <input className="btn btn-success w-100" type="submit" value="SIGN IN" />
+        <div>
+        <form className = "login-form" onSubmit={onSubmit}>
+            <label htmlFor="username">UserName/E-mail</label><br></br>
+            <input type="username" placeholder="Enter user name" name="username" onChange={onChange} value={username} id="username" required></input>
+            <br></br>
+            <label htmlFor="Password">Password</label><br></br>
+            <input type="password" placeholder="Enter password" name="password" id="password" onChange={onChange} value={password} required></input>
+            <br></br>
+            <a href="Register" className="new-account">New ! Create Account</a>
+            <br></br>
+            <input type="submit" id="btn-users" className="submit-button" value="Login"></input>
         </form>
-      
         </div>
     );
 }
